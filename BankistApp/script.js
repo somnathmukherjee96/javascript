@@ -68,7 +68,7 @@ const displayMovements = function (movements) {
     const html = `
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    <div class="movements__value">${mov}</div>
+    <div class="movements__value">${mov}€</div>
   </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
@@ -86,4 +86,66 @@ const createUsernames = (accounts) => {
   );
 };
 createUsernames(accounts);
-console.log(accounts);
+
+const createWithdrawals = (accounts) => {
+  accounts.forEach(
+    (account) =>
+      (account.withdrawals = account.movements.filter(
+        (movement) => movement < 0
+      ))
+  );
+};
+
+createWithdrawals(accounts);
+
+const calculateBalance = (accounts) => {
+  accounts.forEach(
+    (account) =>
+      (account.balance = account.movements.reduce(
+        (acc, movement) => acc + movement,
+        0
+      ))
+  );
+};
+
+calculateBalance(accounts);
+labelBalance.textContent = `${account1.balance}€`;
+
+const calculateIncomes = (accounts) => {
+  accounts.forEach(
+    (account) =>
+      (account.income = account.movements
+        .filter((movement) => movement > 0)
+        .reduce((acc, deposits) => acc + deposits, 0))
+  );
+};
+calculateIncomes(accounts);
+const calculateOutcomes = (accounts) => {
+  accounts.forEach(
+    (account) =>
+      (account.outcome = Math.abs(
+        account.movements
+          .filter((movement) => movement < 0)
+          .reduce((acc, deposits) => acc + deposits, 0)
+      ))
+  );
+};
+calculateOutcomes(accounts);
+calculateIncomes(accounts);
+const calculateInterest = (accounts) => {
+  accounts.forEach(
+    (account) =>
+      (account.interest = account.movements
+        .filter((movement) => movement > 0)
+        .map((deposit) => (deposit * account.interestRate) / 100)
+        .filter((interest) => interest >= 1)
+        .reduce((acc, deposits) => acc + deposits, 0))
+  );
+};
+calculateInterest(accounts);
+const displaySummary = (account) => {
+  labelSumIn.textContent = `${account.income}€`;
+  labelSumOut.textContent = `${account.outcome}€`;
+  labelSumInterest.textContent = `${account.interest}`;
+};
+displaySummary(account1);
