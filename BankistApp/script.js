@@ -69,8 +69,21 @@ const displayMovements = function (movements) {
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
     <div class="movements__value">${mov}</div>
-  </div>;
+  </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
 displayMovements(account1.movements);
+
+const createUsernames = (accounts) => {
+  accounts.forEach(
+    (account) =>
+      (account.username = account.owner
+        .toLocaleLowerCase()
+        .split(" ")
+        .map((name) => name[0])
+        .join(""))
+  );
+};
+createUsernames(accounts);
+console.log(accounts);
