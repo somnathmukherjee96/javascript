@@ -96,52 +96,47 @@ const createWithdrawals = (accounts) => {
 
 createWithdrawals(accounts);
 
-const calculateBalance = (accounts) => {
-  accounts.forEach(
-    (account) =>
-      (account.balance = account.movements.reduce(
-        (acc, movement) => acc + movement,
-        0
-      ))
+const calculateAndDisplayBalance = (account) => {
+  account.balance = account.movements.reduce(
+    (acc, movement) => acc + movement,
+    0
   );
+  labelBalance.textContent = `${currentAccount.balance}€`;
 };
-calculateBalance(accounts);
-const calculateIncomes = (accounts) => {
-  accounts.forEach(
-    (account) =>
-      (account.income = account.movements
-        .filter((movement) => movement > 0)
-        .reduce((acc, deposits) => acc + deposits, 0))
-  );
-};
-calculateIncomes(accounts);
-const calculateOutcomes = (accounts) => {
-  accounts.forEach(
-    (account) =>
-      (account.outcome = Math.abs(
-        account.movements
-          .filter((movement) => movement < 0)
-          .reduce((acc, deposits) => acc + deposits, 0)
-      ))
-  );
-};
-calculateOutcomes(accounts);
-calculateIncomes(accounts);
-const calculateInterest = (accounts) => {
-  accounts.forEach(
-    (account) =>
-      (account.interest = account.movements
-        .filter((movement) => movement > 0)
-        .map((deposit) => (deposit * account.interestRate) / 100)
-        .filter((interest) => interest >= 1)
-        .reduce((acc, deposits) => acc + deposits, 0))
-  );
-};
-calculateInterest(accounts);
-const displaySummary = (account) => {
+const calculateAndDisplayIncomes = (account) => {
+  account.income = account.movements
+    .filter((movement) => movement > 0)
+    .reduce((acc, deposits) => acc + deposits, 0);
   labelSumIn.textContent = `${account.income}€`;
+};
+const calculateAndDisplayOutcomes = (account) => {
+  account.outcome = Math.abs(
+    account.movements
+      .filter((movement) => movement < 0)
+      .reduce((acc, deposits) => acc + deposits, 0)
+  );
   labelSumOut.textContent = `${account.outcome}€`;
+};
+const calculateAndDisplayInterest = (account) => {
+  account.interest = account.movements
+    .filter((movement) => movement > 0)
+    .map((deposit) => (deposit * account.interestRate) / 100)
+    .filter((interest) => interest >= 1)
+    .reduce((acc, deposits) => acc + deposits, 0);
   labelSumInterest.textContent = `${account.interest}€`;
+};
+const displaySummary = (account) => {
+  calculateAndDisplayIncomes(account);
+  calculateAndDisplayOutcomes(account);
+  calculateAndDisplayInterest(account);
+};
+const updateUI = (currentAccount) => {
+  //display movements
+  displayMovements(currentAccount.movements);
+  //display balance
+  calculateAndDisplayBalance(currentAccount);
+  //display summary
+  displaySummary(currentAccount);
 };
 
 let currentAccount;
@@ -165,13 +160,27 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
 
-    //display movements
-    displayMovements(currentAccount.movements);
+    updateUI(currentAccount);
+  }
+});
 
-    //display balance
-    labelBalance.textContent = `${currentAccount.balance}€`;
-
-    //display summary
-    displaySummary(currentAccount);
+//transfers
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  console.log("Transfer button was clicked");
+  const transferAmount = Number(inputTransferAmount.value);
+  const receiverAccount = accounts.find(
+    (account) => account.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = "";
+  if (
+    transferAmount > 0 &&
+    receiverAccount &&
+    transferAmount <= currentAccount.balance &&
+    receiverAccount?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-transferAmount);
+    receiverAccount.movements.push(transferAmount);
+    updateUI(currentAccount);
   }
 });
