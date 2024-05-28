@@ -69,7 +69,7 @@ const displayMovements = function (movements, sort = false) {
     const html = `
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    <div class="movements__value">${mov}€</div>
+    <div class="movements__value">${mov.toFixed(2)}€</div>
   </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
@@ -102,13 +102,13 @@ const calculateAndDisplayBalance = (account) => {
     (acc, movement) => acc + movement,
     0
   );
-  labelBalance.textContent = `${currentAccount.balance}€`;
+  labelBalance.textContent = `${currentAccount.balance.toFixed(2)}€`;
 };
 const calculateAndDisplayIncomes = (account) => {
   account.income = account.movements
     .filter((movement) => movement > 0)
     .reduce((acc, deposits) => acc + deposits, 0);
-  labelSumIn.textContent = `${account.income}€`;
+  labelSumIn.textContent = `${account.income.toFixed(2)}€`;
 };
 const calculateAndDisplayOutcomes = (account) => {
   account.outcome = Math.abs(
@@ -116,7 +116,7 @@ const calculateAndDisplayOutcomes = (account) => {
       .filter((movement) => movement < 0)
       .reduce((acc, deposits) => acc + deposits, 0)
   );
-  labelSumOut.textContent = `${account.outcome}€`;
+  labelSumOut.textContent = `${account.outcome.toFixed(2)}€`;
 };
 const calculateAndDisplayInterest = (account) => {
   account.interest = account.movements
@@ -124,7 +124,7 @@ const calculateAndDisplayInterest = (account) => {
     .map((deposit) => (deposit * account.interestRate) / 100)
     .filter((interest) => interest >= 1)
     .reduce((acc, deposits) => acc + deposits, 0);
-  labelSumInterest.textContent = `${account.interest}€`;
+  labelSumInterest.textContent = `${account.interest.toFixed(2)}€`;
 };
 const displaySummary = (account) => {
   calculateAndDisplayIncomes(account);
@@ -189,7 +189,7 @@ btnTransfer.addEventListener("click", function (e) {
 //issue loan
 btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
-  const loanAmount = Number(inputLoanAmount.value);
+  const loanAmount = Math.floor(inputLoanAmount.value);
 
   if (
     loanAmount > 0 &&
@@ -224,3 +224,86 @@ btnSort.addEventListener("click", function (e) {
   displayMovements(currentAccount.movements, !sorted);
   sorted = !sorted;
 });
+
+// const bankDeposits = accounts
+//   .flatMap((acc) => acc.movements)
+//   .filter((movement) => movement > 0)
+//   .reduce((sum, curr) => sum + curr, 0);
+// console.log(bankDeposits);
+
+// // const numDeposits1000 = accounts
+// //   .flatMap((account) => account.movements)
+// //   .filter((movement) => movement > 1000).length;
+// // console.log(numDeposits1000);
+
+// const numDeposits1000 = accounts
+//   .flatMap((account) => account.movements)
+//   .reduce((count, cur) => (cur >= 1000 ? ++count : count), 0);
+// console.log(numDeposits1000);
+
+// const { deposits, withdrawals } = accounts
+//   .flatMap((account) => account.movements)
+//   .reduce(
+//     (sums, movement) => {
+//       movement > 0
+//         ? (sums.deposits += movement)
+//         : (sums.withdrawals += movement);
+//       return sums;
+//     },
+//     { deposits: 0, withdrawals: 0 }
+//   );
+
+// console.log(deposits);
+
+// //this is a nice title -> This Is a Nice Title
+// const convertTitleCase = (title) => {
+//   const exceptions = ["a", "an", "the", "but", "or", "on", "in", "with"];
+//   const titleCase = title
+//     .toLowerCase()
+//     .split(" ")
+//     .map((word) =>
+//       exceptions.includes(word) ? word : word[0].toUpperCase() + word.slice(1)
+//     )
+//     .join(" ");
+//   return titleCase;
+// };
+// console.log(convertTitleCase("this is a nice title")); //This Is a Nice Title
+
+// const dogs = [
+//   { weight: 22, curFood: 250, owners: ["Alice", "Bob"] },
+//   { weight: 8, curFood: 200, owners: ["Matilda"] },
+//   { weight: 13, curFood: 275, owners: ["Sarah", "John"] },
+//   { weight: 32, curFood: 340, owners: ["Michael"] },
+// ];
+
+// dogs.forEach((dog) => {
+//   dog.recommendedFoodPortion = Math.trunc(dog.weight ** 0.75 * 28);
+// });
+// console.log(dogs);
+
+// const { curFood, recommendedFoodPortion } = dogs.find((dog) =>
+//   dog.owners.includes("Sarah")
+// );
+// const eatingStatus =
+//   curFood > recommendedFoodPortion ? "Eating too much" : "Eating too little";
+// console.log(`Sarah's dog is ${eatingStatus}`);
+
+// const ownersEatTooMuch = dogs
+//   .filter((dog) => dog.curFood > dog.recommendedFoodPortion)
+//   .flatMap((dog) => dog.owners);
+// const ownersEatTooLess = dogs
+//   .filter((dog) => dog.curFood < dog.recommendedFoodPortion)
+//   .flatMap((dog) => dog.owners);
+
+// console.log(ownersEatTooMuch, ownersEatTooLess);
+// console.log(`${ownersEatTooMuch.join(" and ")}'s dogs eat too much`);
+// console.log(`${ownersEatTooLess.join(" and ")}'s dogs eat too less`);
+
+// console.log(dogs.some((dog) => dog.curFood === dog.recommendedFoodPortion));
+
+// const dogsCpy = dogs
+//   .slice()
+//   .sort(
+//     (dog1, dog2) => dog1.recommendedFoodPortion - dog2.recommendedFoodPortion
+//   );
+// console.log(dogsCpy);
