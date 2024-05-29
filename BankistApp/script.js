@@ -69,11 +69,17 @@ const displayMovements = function (movements, sort = false) {
     const html = `
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    <div class="movements__value">${mov.toFixed(2)}€</div>
+    <div class="movements__value">${formatCurrency(mov, "USD")}</div>
   </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
+
+const formatCurrency = (val, currency) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+  }).format(val);
 const createUsernames = (accounts) => {
   accounts.forEach(
     (account) =>
@@ -102,13 +108,13 @@ const calculateAndDisplayBalance = (account) => {
     (acc, movement) => acc + movement,
     0
   );
-  labelBalance.textContent = `${currentAccount.balance.toFixed(2)}€`;
+  labelBalance.textContent = formatCurrency(account.balance, "USD");
 };
 const calculateAndDisplayIncomes = (account) => {
   account.income = account.movements
     .filter((movement) => movement > 0)
     .reduce((acc, deposits) => acc + deposits, 0);
-  labelSumIn.textContent = `${account.income.toFixed(2)}€`;
+  labelSumIn.textContent = formatCurrency(account.income, "USD");
 };
 const calculateAndDisplayOutcomes = (account) => {
   account.outcome = Math.abs(
@@ -116,7 +122,7 @@ const calculateAndDisplayOutcomes = (account) => {
       .filter((movement) => movement < 0)
       .reduce((acc, deposits) => acc + deposits, 0)
   );
-  labelSumOut.textContent = `${account.outcome.toFixed(2)}€`;
+  labelSumOut.textContent = formatCurrency(account.outcome, "USD");
 };
 const calculateAndDisplayInterest = (account) => {
   account.interest = account.movements
@@ -124,7 +130,7 @@ const calculateAndDisplayInterest = (account) => {
     .map((deposit) => (deposit * account.interestRate) / 100)
     .filter((interest) => interest >= 1)
     .reduce((acc, deposits) => acc + deposits, 0);
-  labelSumInterest.textContent = `${account.interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCurrency(account.interest, "USD");
 };
 const displaySummary = (account) => {
   calculateAndDisplayIncomes(account);
