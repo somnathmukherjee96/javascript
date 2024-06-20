@@ -149,12 +149,6 @@ const updateUI = (currentAccount) => {
 
 const showCurrentDt = () => {
   const now = new Date();
-  // const day = `${now.getDate()}`.padStart(2, 0);
-  // const month = `${now.getMonth() + 1}`.padStart(2, 0);
-  // const year = now.getFullYear();
-  // const hour = `${now.getHours()}`.padStart(2, 0);
-  // const min = `${now.getMinutes()}`.padStart(2, 0);
-  // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
   const options = {
     hour: "numeric",
     minute: "numeric",
@@ -221,9 +215,12 @@ btnLoan.addEventListener("click", function (e) {
     currentAccount.movements.some((movement) => movement >= loanAmount * 0.1)
   ) {
     inputLoanAmount.value = "";
-    currentAccount.movements.push(loanAmount);
-    updateUI(currentAccount);
+    setTimeout(function () {
+      currentAccount.movements.push(loanAmount);
+      updateUI(currentAccount);
+    }, 2500);
   }
+  `ˀ`;
 });
 
 //close account
