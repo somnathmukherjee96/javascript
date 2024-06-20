@@ -147,6 +147,28 @@ const updateUI = (currentAccount) => {
   displaySummary(currentAccount);
 };
 
+const startLogoutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+    // In each call, print the remaining time to UI
+
+    labelTimer.textContent = `${min}:${sec}`;
+    // when 0 seconds, stop timer and log out user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = "Login to get started";
+      containerApp.style.opacity = 0;
+    }
+    time--;
+  };
+  // set time to 5 minutes
+  let time = 120;
+  // call the timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
 const showCurrentDt = () => {
   const now = new Date();
   const options = {
@@ -160,7 +182,7 @@ const showCurrentDt = () => {
   labelDate.textContent = new Intl.DateTimeFormat("en-US", options).format(now);
 };
 
-let currentAccount;
+let currentAccount, timer;
 
 //logging in
 btnLogin.addEventListener("click", function (e) {
@@ -179,7 +201,8 @@ btnLogin.addEventListener("click", function (e) {
     //clear the input fields
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
-
+    if (timer) clearInterval(timer);
+    timer = startLogoutTimer();
     updateUI(currentAccount);
   }
 });
@@ -202,6 +225,9 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount.movements.push(-transferAmount);
     receiverAccount.movements.push(transferAmount);
     updateUI(currentAccount);
+    //reset the timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
   }
 });
 
@@ -218,9 +244,11 @@ btnLoan.addEventListener("click", function (e) {
     setTimeout(function () {
       currentAccount.movements.push(loanAmount);
       updateUI(currentAccount);
+      //reset the timer
+      clearInterval(timer);
+      timer = startLogoutTimer();
     }, 2500);
   }
-  `ˀ`;
 });
 
 //close account
