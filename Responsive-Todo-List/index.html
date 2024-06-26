@@ -11,8 +11,30 @@
     />
   </head>
   <body>
-    <div class="input-field">
-      <textarea placeholder="Enter your new todo"></textarea>
+    <div class="container">
+      <div class="input-field">
+        <textarea placeholder="Enter your new todo"></textarea>
+        <i class="uil uil-notes note-icon"></i>
+      </div>
+      <ul class="todoLists">
+        <li class="list">
+          <input type="checkbox" />
+          <span class="task">Renew Gym Membership</span>
+          <i class="uil uil-trash"></i>
+        </li>
+        <li class="list">
+          <input type="checkbox" />
+          <span class="task"
+            >Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
+            nulla, voluptatum maxime quod assumenda sed.</span
+          >
+          <i class="uil uil-trash"></i>
+        </li>
+      </ul>
+      <div class="pending-tasks">
+        <span>You have <span>no</span> tasks pending</span>
+        <button class="clear-button">Clear All</button>
+      </div>
     </div>
   </body>
 </html>
