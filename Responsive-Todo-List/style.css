@@ -53,7 +53,9 @@ textarea::-webkit-scrollbar {
   color: #4070f4;
 }
 .container .todoLists {
-  margin-top: 20px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 .todoLists .list {
   list-style: none;
@@ -70,7 +72,7 @@ textarea::-webkit-scrollbar {
   height: 16px;
   min-width: 16px;
   accent-color: #4070f4;
-  /* pointer-events: none; */
+  pointer-events: none;
 }
 .todoLists .list .task {
   margin: 0 30px 0 15px;
@@ -114,6 +116,8 @@ textarea::-webkit-scrollbar {
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
+  pointer-events: none;
+  white-space: nowrap;
 }
 .clear-button:hover {
   background-color: #0e4bf1;
